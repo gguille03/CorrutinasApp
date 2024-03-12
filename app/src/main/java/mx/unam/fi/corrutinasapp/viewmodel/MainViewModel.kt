@@ -5,31 +5,53 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainViewModel:ViewModel(){
     var resultState by mutableStateOf("")
         private set
-    var counTime by mutableStateOf(0)
+    var countTime by mutableStateOf(0)
+        private set
+    var countTime2 by mutableStateOf(0)
         private set
     var oneCount by mutableStateOf(false)
         private set
-    fun fetchData(){
-       val job =  viewModelScope.launch {
-            for(i in 1..5){
+    fun fetchData() {
+        viewModelScope.launch {
+            for (i in 1..5) {
                 delay(1000)
-                counTime = i
+                countTime = i
             }
-           oneCount  = true
-        }
-        if (oneCount){
-            job.cancel()
+            oneCount = true
         }
 
         viewModelScope.launch {
-            delay(5000)
+            while (!oneCount) {
+
+                delay(100)
+            }
+            for (i in 1..10) {
+                delay(1000)
+                countTime2 = i
+            }
             resultState = "Respuesta de la API o la Web"
+            countTime = 0
+            countTime2 = 0
+            oneCount = false
+
         }
+
     }
+
+    fun cancelCounters() {
+        // Cancelar todos los trabajos en viewModelScope
+        viewModelScope.coroutineContext.cancelChildren()
+        // Reiniciar los contadores
+        countTime = 0
+        countTime2 = 0
+        oneCount = false
+    }
+
 }

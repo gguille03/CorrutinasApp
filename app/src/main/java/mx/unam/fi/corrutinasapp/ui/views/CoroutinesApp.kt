@@ -24,37 +24,46 @@ import mx.unam.fi.corrutinasapp.ui.theme.CorrutinasAppTheme
 import mx.unam.fi.corrutinasapp.viewmodel.MainViewModel
 
 @Composable
-fun CoroutinesApp(viewModel:MainViewModel=MainViewModel(), modifier: Modifier= Modifier){
-    var changeColor by remember{
+fun CoroutinesApp(viewModel: MainViewModel = MainViewModel(), modifier: Modifier = Modifier) {
+    var changeColor by remember {
         mutableStateOf(false)
     }
     Column(
-        modifier=modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Button(onClick = {
-            changeColor = !changeColor
-        },
+    ) {
+        Button(
+            onClick = {
+                changeColor = !changeColor
+            },
             colors = ButtonDefaults.buttonColors(
-            if(changeColor)Color.Blue else Color.Red
-            )) {
+                if (changeColor) Color.Blue else Color.Red
+            )
+        ) {
             Text(text = stringResource(id = R.string.cambio_de_color))
         }
 
-        Spacer(modifier=modifier.height(30.dp))
+        Spacer(modifier = modifier.height(30.dp))
 
-        Text(text = "${viewModel.counTime}[s]")
+        Text(text = "${viewModel.countTime}[s]")
+        Text(text = "${viewModel.countTime2}[s]")
 
         Text(text = viewModel.resultState)
 
-        Spacer(modifier=modifier.height(30.dp))
+        Spacer(modifier = modifier.height(30.dp))
 
         Button(onClick = { viewModel.fetchData()}) {
             Text(text = stringResource(R.string.realizar_consulta))
         }
+        Spacer(modifier = modifier.height(30.dp))
+
+        Button(onClick = { viewModel.cancelCounters() }) {
+            Text(text = "Cancelar contadores")
+        }
     }
 }
+
 
 @Preview
 @Composable
